@@ -4,24 +4,24 @@ services:
 
         jenkins:
                 image: jenkins/jenkins:jdk11
-                container_name: jenkins_compose
+                container_name: jenkins_2
                 ports:
                 - "8880:8080"
-                - "50000:50000"ls
+                - "50000:50000"
                 volumes:
                 - /home/panda/jenkins:/var/jenkins_home
                 networks:
                 - "docker_network"
         
         ubuntu_slave:   
-          depends_on:
-            - jenkins     
-                container_name: ubuntu
+                depends_on:
+                  - jenkins     
+                container_name: ubuntu_slave
                 volumes:
-                - /var/run/docer.sock:/var/run/docker.sock
+                - /var/run/docker.sock:/var/run/docker.sock
                 build:
-                  context: /home/panda/pandaenv/slave/
-                command: #todojava -jar agent.jar -jnlpUrl http://192.168.44.44:8880/computer/007/jenkins-agent.jnlp -secret 70ed69374523d18516325e1b7f509e3f449255a61d933898bd123fdc409ad06e -workDir "/home/"
+                  context: ../dockerfiles/slave/
+                command: java -jar agent.jar -jnlpUrl http://192.168.44.44:8880/computer/007/jenkins-agent.jnlp -secret 70ed69374523d18516325e1b7f509e3f449255a61d933898bd123fdc409ad06e -workDir "/home/"
 
         selenium_hub:
                 image: selenium/hub     
@@ -33,7 +33,7 @@ services:
                 networks:
                 - docker_network
 
-          firefox:
+        firefox:
                 image: selenium/node-firefox    
                 container_name: firefox
                 depends_on:
@@ -44,3 +44,19 @@ services:
                 - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
                 networks:
                 - docker_network
+
+        artifactory:
+                image: docker.bintray.io/jfrog/artifactory-oss:latest       
+                container_name: artifactory           
+                volumes:
+                   - /home/panda/pandaenv/volumes/artifactory/    
+                ports:           
+                  - "8081:8081"            
+                  - "8082:8082"            
+                networks:
+                - docker_network
+
+
+networks:
+  docker_network:
+
