@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+        jenkins:
+                image: jenkins/jenkins:jdk11
+                container_name: jenkins_compose
+                ports:
+                - "8880:8080"
+                - "50000:50000"ls
+                volumes:
+                - /home/panda/jenkins:/var/jenkins_home
+                networks:
+                - "docker_network"
+        
+        ubuntu_slave:   
+          depends_on:
+            - jenkins     
+                container_name: ubuntu
+                volumes:
+                - /var/run/docer.sock:/var/run/docker.sock
+                build:
+                  context: /home/panda/pandaenv/slave/
+                command: #todojava -jar agent.jar -jnlpUrl http://192.168.44.44:8880/computer/007/jenkins-agent.jnlp -secret 70ed69374523d18516325e1b7f509e3f449255a61d933898bd123fdc409ad06e -workDir "/home/"
+
+        selenium_hub:
+                image: selenium/hub     
+                container_name: seleniumhub
+                ports:
+                - "4442:4442"
+                - "4443:4443"
+                - "4444:4444"
+                networks:
+                - docker_network
+
+          firefox:
+                image: selenium/node-firefox    
+                container_name: firefox
+                depends_on:
+                - selenium_hub
+                environment:
+                - SE_EVENT_BUS_HOST=selenium_hub
+                - SE_EVENT_BUS_PUBLISH_PORT=4442
+                - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+                networks:
+                - docker_network

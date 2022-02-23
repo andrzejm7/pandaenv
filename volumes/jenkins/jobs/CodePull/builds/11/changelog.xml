@@ -1,0 +1,9 @@
+commit e855cc10041607840dfd634c9590f5401cd24c1a
+tree 4ab88131a4ef6521c5423c29c5b624c4cdaf1fe4
+parent d7acb96dcfe867de56691044b44becd1863e855e
+author andrzejm7 <98713973+andrzejm7@users.noreply.github.com> 2022-02-09 18:15:53 +0100
+committer GitHub <noreply@github.com> 2022-02-09 18:15:53 +0100
+
+    Create Dockerfile
+
+:000000 100644 0000000000000000000000000000000000000000 b1eea225edf6fd5979899ed10385be17c88bafdc A	Dockerfile
